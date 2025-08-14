@@ -4,8 +4,8 @@ Enzyme optimization.
 # Table of Contents
 
 - [Local Installation](#local-installation)
-   - [System Requirements](#requirements)
-   - [Installation](#installing)
+   - [Requirements](#requirements)
+   <!-- - [Installation](#installing) -->
    - [Prediction](#predict)
    - [Reproducibility](#reproduce)
 
@@ -32,7 +32,36 @@ pip install torch-geometric
 pip install rdkit
 ```
 
-# ToDo
+### Prediction <a name="predict"></a>
+This project supports two inference modes:
 
-1. process dataset
-2. data preparation code
+1. User-specified mutations (following `input_json/example.json`).
+2. Deep Mutational Scanning (following `input_json/example_dms.json`).
+
+Both modes require a protein sequence, a ligand SMILES string, and the according PDB file path.
+
+```
+cd Inference
+
+# Mode A: specified mutations (example.json)
+python inference.py --input input_json/example.json
+
+# Mode B: DMS (example_dms.json)
+python inference.py --input input_json/example_dms.json
+```
+
+**Input json format:**
+Required fields (both modes):
+
+~ sequence: string; amino-acid sequence using one-letter codes.
+~ ligand_smiles: string; SMILES of the ligand.
+~ pdb_path: string; absolute or project-relative path to a reference PDB file.
+
+
+
+### Reproducibility <a name="reproduce"></a>
+Download the split and features xxxx.
+```
+cd Inference
+python reproduce.py
+```
