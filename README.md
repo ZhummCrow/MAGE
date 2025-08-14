@@ -14,7 +14,7 @@ Enzyme optimization.
 
 To run MAGE on a local machine, please follow the instructions below.
 
-### 🖥️ System Requirements <a name="requirements"></a>
+### Requirements <a name="requirements"></a>
 ```
 conda create --name MAGE python=3.8
 conda install pytorch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0 pytorch-cuda=11.8 -c pytorch -c nvidia
