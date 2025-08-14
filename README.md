@@ -1,7 +1,7 @@
 # MAGE
 Enzyme optimization.
 
-# 📖 Table of Contents
+## 📖 Table of Contents
 
 - [Local Installation](#local-installation)
    - [Requirements](#requirements)
