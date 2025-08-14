@@ -23,7 +23,6 @@ class ProteinGraphDataset(data.Dataset):
         super(ProteinGraphDataset, self).__init__()       
         self.dataset = pd.read_csv(config['dms_path'])
         self.esm_path = config['ESM_path']
-        self.radius = config['radius']
         
         self.smiles_feat = get_maccs_keys(config['smiles'])
 
@@ -32,7 +31,7 @@ class ProteinGraphDataset(data.Dataset):
         self.DSSP = torch.load(config['structs_path']+self.protein_name+"_dssp.tensor")
         
         X_ca = self.X[:, 1]
-        self.edge_index = torch_geometric.nn.radius_graph(X_ca, r=self.radius, loop=True, max_num_neighbors = 1000, num_workers = 4)
+        self.edge_index = torch_geometric.nn.radius_graph(X_ca, r=12.0, loop=True, max_num_neighbors = 1000, num_workers = 4)
 
         
         
@@ -60,7 +59,7 @@ class ProteinGraphDataset(data.Dataset):
             mut_graph_mask10 = torch.zeros(len(self.X),dtype=torch.bool)
             mut_graph_mask12 = torch.zeros(len(self.X),dtype=torch.bool)
             X_ca = self.X[:, 1]
-            for mut in mutants.split(","):
+            for mut in mutants.split("_"):
                 mut_loc = X_ca[int(mut[1:-1])-1]
                 distance = torch.norm(X_ca-mut_loc,dim=1)
                 mut_graph_mask10[distance<10]=True

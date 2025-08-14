@@ -34,6 +34,32 @@ def prepare_dms(nn_config):
     dms_df.to_csv(nn_config['dms_path'],index=False)
     return dms_df
 
+def prepare_mutant_df(nn_config,desired_mutants):
+    if os.path.exists(nn_config['dms_path']):
+        return pd.read_csv(nn_config['dms_path'])
+    
+    sequence = nn_config['sequence']
+    protein_name = nn_config['protein_name']
+    mutant_seqs = []
+    mutants = desired_mutants.split(";")
+    for mutant in mutants:  
+        mutant_sequence = sequence
+        for single_mutant in mutant.split("_"):
+            from_aa,loc,to_aa = single_mutant[0],single_mutant[1:-1],single_mutant[-1]
+            loc = int(loc)-1 # loc start from 1
+            assert from_aa == mutant_sequence[loc], f"wrong mutant:{mutant} with wrong wt_aa {from_aa} != {mutant_sequence[loc]} in {loc+1}"
+            mutant_sequence = mutant_sequence[:loc] + to_aa + sequence[loc+1:]
+        mutant_seqs.append(mutant_sequence)  # mutant sequence 
+    data = {
+        "protein_name":[protein_name for _ in mutants],
+        "smiles":nn_config['smiles'],
+        "mutant":mutants,
+        "mutant_sequence":mutant_seqs,
+        "seq_id":[protein_name+"_"+mut for mut in mutants],}
+    dms_df = pd.DataFrame(data)
+    dms_df.to_csv(nn_config['dms_path'],index=False)
+    return dms_df
+
 def prepare_esm_embedding(dms_df,nn_config):
     sequence = nn_config['sequence']
     protein_name = nn_config['protein_name']
@@ -192,11 +218,9 @@ def get_DSSP(nn_config):
 
 
 def prepare_feature(nn_config):
-    nn_config['job_name'] = data['job_name']
-    nn_config['protein_name'] = data['protein']['name']
-    nn_config['sequence'] = data['protein']['sequence']
-    nn_config['smiles'] = data['ligand']['SMILES']
-    nn_config['pdb_path'] = data['pdb_path']
+    nn_config['protein_name'] = nn_config['protein']['name']
+    nn_config['sequence'] = nn_config['protein']['sequence']
+    nn_config['smiles'] = nn_config['ligand']['SMILES']
     
     # step 0 makedirs
     feature_path = nn_config['feature_path']
@@ -212,7 +236,11 @@ def prepare_feature(nn_config):
     # step 1 prepare dms file
     print("step 1 prepare dms file")
     nn_config['dms_path'] = feature_path+nn_config['job_name']+".csv"
-    dms_df = prepare_dms(nn_config)
+    if nn_config['mutant']=="dms": # 执行全部单点突变
+        dms_df = prepare_dms(nn_config)
+    else: # 给出要执行的突变点
+        desired_mutants = nn_config["mutant"]
+        dms_df = prepare_mutant_df(nn_config,desired_mutants)
 
     # step2 get ESM embeddings
     print("step2 prepare ESM embeddings")
