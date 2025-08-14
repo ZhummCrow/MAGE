@@ -1,7 +1,7 @@
 # MAGE
 Enzyme optimization.
 
-# Table of Contents
+# 📖 Table of Contents
 
 - [Local Installation](#local-installation)
    - [Requirements](#requirements)
@@ -10,11 +10,11 @@ Enzyme optimization.
    - [Reproducibility](#reproduce)
 
 
-## Local Installation <a name="local-installation"></a>
+## 💻 Local Installation <a name="local-installation"></a>
 
 To run MAGE on a local machine, please follow the instructions below.
 
-### Requirements <a name="requirements"></a>
+### 📦 Requirements <a name="requirements"></a>
 ```
 conda create --name MAGE python=3.8
 conda install pytorch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0 pytorch-cuda=11.8 -c pytorch -c nvidia
@@ -32,7 +32,7 @@ pip install torch-geometric
 pip install rdkit
 ```
 
-### Prediction <a name="predict"></a>
+### 🔍 Prediction <a name="predict"></a>
 This project supports two inference modes:
 
 1. User-specified mutations (following `input_json/example.json`).
@@ -53,13 +53,13 @@ python inference.py --input input_json/example_dms.json
 **Input json format:**
 Required fields (both modes):
 
-~ sequence: string; amino-acid sequence using one-letter codes.
-~ ligand_smiles: string; SMILES of the ligand.
-~ pdb_path: string; absolute or project-relative path to a reference PDB file.
+* sequence: string; amino-acid sequence using one-letter codes.
+* ligand_smiles: string; SMILES of the ligand.
+* pdb_path: string; absolute or project-relative path to a reference PDB file.
 
 
 
-### Reproducibility <a name="reproduce"></a>
+### 📑 Reproducibility <a name="reproduce"></a>
 Download the split and features xxxx.
 ```
 cd Inference
