@@ -1,0 +1,2 @@
+download dssp
+download weights
