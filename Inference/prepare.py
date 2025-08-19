@@ -48,7 +48,7 @@ def prepare_mutant_df(nn_config,desired_mutants):
             from_aa,loc,to_aa = single_mutant[0],single_mutant[1:-1],single_mutant[-1]
             loc = int(loc)-1 # loc start from 1
             assert from_aa == mutant_sequence[loc], f"wrong mutant:{mutant} with wrong wt_aa {from_aa} != {mutant_sequence[loc]} in {loc+1}"
-            mutant_sequence = mutant_sequence[:loc] + to_aa + sequence[loc+1:]
+            mutant_sequence = mutant_sequence[:loc] + to_aa + mutant_sequence[loc+1:]
         mutant_seqs.append(mutant_sequence)  # mutant sequence 
     data = {
         "protein_name":[protein_name for _ in mutants],
