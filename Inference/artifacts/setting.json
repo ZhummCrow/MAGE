@@ -1,0 +1,16 @@
+{
+    "num_workers":8,
+    "seed":42,
+    "dropout":0.0,
+    "radius":12.0,
+    "node_input_dim":1473,
+    "edge_input_dim":450,
+    "hidden_dim":128,
+    "GNN_layers":2,
+    "batch_size":12,
+    "attention_layers":{
+        "kcat":2,
+        "km":4
+    },
+    "folds":5
+}
