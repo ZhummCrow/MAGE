@@ -252,7 +252,7 @@ def Reproduce_prepare_feature(args):
     pdb_path = args.pdbs_path
     feature_path = args.feature_path
     
-    # 获取esm feat
+    # get esm emb
     print("step 2 prepare ESM embeddings")
     esm_feat_save_path = feature_path+"esm/"
     os.makedirs(esm_feat_save_path,exist_ok=True)
@@ -266,7 +266,7 @@ def Reproduce_prepare_feature(args):
     esm_input_data=[(k,v) for k,v in esm_input_data_wt_dict.items()] + [(k,v) for k,v in esm_input_data_mut_dict.items()]
     prepare_esm_embedding(esm_input_data,Max_esm,Min_esm,esm_feat_save_path)
     
-    # 获取dssp & pdb tensor
+    # get dssp & pdb tensor
     structs_save_path = feature_path+"structs/"
     dssp_path = args.artifacts_path + "dssp-2.0.4/"
     os.makedirs(structs_save_path,exist_ok=True)

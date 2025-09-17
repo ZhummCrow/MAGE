@@ -49,7 +49,7 @@ def Reproduce(args):
         models.append(model)
 
 
-    test_pred_dict = {} # 导出测试结果
+    test_pred_dict = {} 
     for data in tqdm(test_dataloader):
         wt_data,mut_data,smiles = data[0].to(device),data[1].to(device),data[2].to(device)
         with torch.no_grad():
@@ -57,7 +57,7 @@ def Reproduce(args):
             outputs = [model(wt_data,mut_data,smiles) for model in models] # [[b,2]*5]
             
             preds = [outputs[0] for outputs in outputs] # [[b,2]*5]
-            preds = torch.stack(preds,0).mean(0).detach().cpu().numpy() # 5个模型预测结果求平均
+            preds = torch.stack(preds,0).mean(0).detach().cpu().numpy() 
             
         names = wt_data.name # UID_mutant
         for i, mut in enumerate(names):

@@ -14,7 +14,6 @@ import pandas as pd
 
 def Inference(config):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    # device = 'cpu'
 
     output_path = config['output']
     os.makedirs(output_path, exist_ok = True)
@@ -66,7 +65,7 @@ def Inference(config):
         km_seq_models.append(model)
 
 
-    test_random_pred_dict = {} # 导出测试结果
+    test_random_pred_dict = {} 
     test_seq_pred_dict = {} 
     for data in tqdm(test_dataloader):
         wt_data,mut_data,smiles = data[0].to(device),data[1].to(device),data[2].to(device)
@@ -81,16 +80,16 @@ def Inference(config):
             
             
             kcat_random_preds = [outputs[0] for outputs in kcat_random_outputs] # [[b,2]*5]
-            kcat_random_preds = torch.stack(kcat_random_preds,0).mean(0).detach().cpu().numpy() # 5个模型预测结果求平均
+            kcat_random_preds = torch.stack(kcat_random_preds,0).mean(0).detach().cpu().numpy() 
             kcat_seq_preds = [outputs[0] for outputs in kcat_seq_outputs] # [[b,2]*5]
-            kcat_seq_preds = torch.stack(kcat_seq_preds,0).mean(0).detach().cpu().numpy() # 5个模型预测结果求平均
+            kcat_seq_preds = torch.stack(kcat_seq_preds,0).mean(0).detach().cpu().numpy() 
             km_random_preds = [outputs[0] for outputs in km_random_outputs] # [[b,2]*5]
-            km_random_preds = torch.stack(km_random_preds,0).mean(0).detach().cpu().numpy() # 5个模型预测结果求平均
+            km_random_preds = torch.stack(km_random_preds,0).mean(0).detach().cpu().numpy() 
             km_seq_preds = [outputs[0] for outputs in km_seq_outputs] # [[b,2]*5]
-            km_seq_preds = torch.stack(km_seq_preds,0).mean(0).detach().cpu().numpy() # 5个模型预测结果求平均
+            km_seq_preds = torch.stack(km_seq_preds,0).mean(0).detach().cpu().numpy() 
             
                 
-        names = wt_data.name # name是突变点
+        names = wt_data.name 
         for i, name in enumerate(names):
             test_random_pred_dict[name] = [kcat_random_preds[i],km_random_preds[i],kcat_random_preds[i]-km_random_preds[i]]
             test_seq_pred_dict[name] = [kcat_seq_preds[i],km_seq_preds[i],kcat_seq_preds[i]-km_seq_preds[i]]
