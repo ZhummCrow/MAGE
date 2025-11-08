@@ -98,7 +98,7 @@ def Seed_everything(seed=42):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--task",type=str,default="kcat",help="")
-parser.add_argument("--level",type=str,default="random",help="")
+parser.add_argument("--level",type=str,default="mut",help="")
 parser.add_argument("--test_dataset_path", type=str, default='../Dataset/test_dataset/',help="xxxx")
 parser.add_argument("--pdbs_path", type=str, default='../Dataset/test_pdbs/',help="xxxx")
 

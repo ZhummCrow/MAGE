@@ -35,22 +35,22 @@ def Inference(config):
     test_dataset = ProteinGraphDataset(nn_config['dms_path'],nn_config['feature_path'])
     test_dataloader = DataLoader(test_dataset, batch_size = batch_size, shuffle=False, drop_last=False, num_workers=num_workers, prefetch_factor=2)
 
-    kcat_random_models = []
-    km_random_models = []
+    kcat_mut_models = []
+    km_mut_models = []
     kcat_seq_models = []
     km_seq_models = []
     for fold in range(folds):
-        state_dict = torch.load(artifacts_path + 'kcat_random/finetune_fold%s.ckpt'%fold, device)
+        state_dict = torch.load(artifacts_path + 'kcat_mut/finetune_fold%s.ckpt'%fold, device)
         model = DeltaCata(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, "kcat", kcat_num_att_layers).to(device)
         model.load_state_dict(state_dict)
         model.eval()
-        kcat_random_models.append(model)
+        kcat_mut_models.append(model)
 
-        state_dict = torch.load(artifacts_path + 'km_random/finetune_fold%s.ckpt'%fold, device)
+        state_dict = torch.load(artifacts_path + 'km_mut/finetune_fold%s.ckpt'%fold, device)
         model = DeltaCata(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, "km", km_num_att_layers).to(device)
         model.load_state_dict(state_dict)
         model.eval()
-        km_random_models.append(model)
+        km_mut_models.append(model)
 
         state_dict = torch.load(artifacts_path + 'kcat_seq/finetune_fold%s.ckpt'%fold, device)
         model = DeltaCata(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, "kcat", kcat_num_att_layers).to(device)
@@ -65,40 +65,40 @@ def Inference(config):
         km_seq_models.append(model)
 
 
-    test_random_pred_dict = {} 
+    test_mut_pred_dict = {} 
     test_seq_pred_dict = {} 
     for data in tqdm(test_dataloader):
         wt_data,mut_data,smiles = data[0].to(device),data[1].to(device),data[2].to(device)
         with torch.no_grad():
             mut_data.mut_graph_mask=mut_data.mut_graph_mask10
-            kcat_random_outputs = [model(wt_data,mut_data,smiles) for model in kcat_random_models] # [[b,2]*5]
-            km_random_outputs = [model(wt_data,mut_data,smiles) for model in km_random_models] # [[b,2]*5]
+            kcat_mut_outputs = [model(wt_data,mut_data,smiles) for model in kcat_mut_models] # [[b,2]*5]
+            km_mut_outputs = [model(wt_data,mut_data,smiles) for model in km_mut_models] # [[b,2]*5]
             km_seq_outputs = [model(wt_data,mut_data,smiles) for model in km_seq_models] # [[b,2]*5]        
             
             mut_data.mut_graph_mask=mut_data.mut_graph_mask12
             kcat_seq_outputs = [model(wt_data,mut_data,smiles) for model in kcat_seq_models] # [[b,2]*5]
             
             
-            kcat_random_preds = [outputs[0] for outputs in kcat_random_outputs] # [[b,2]*5]
-            kcat_random_preds = torch.stack(kcat_random_preds,0).mean(0).detach().cpu().numpy() 
+            kcat_mut_preds = [outputs[0] for outputs in kcat_mut_outputs] # [[b,2]*5]
+            kcat_mut_preds = torch.stack(kcat_mut_preds,0).mean(0).detach().cpu().numpy() 
             kcat_seq_preds = [outputs[0] for outputs in kcat_seq_outputs] # [[b,2]*5]
             kcat_seq_preds = torch.stack(kcat_seq_preds,0).mean(0).detach().cpu().numpy() 
-            km_random_preds = [outputs[0] for outputs in km_random_outputs] # [[b,2]*5]
-            km_random_preds = torch.stack(km_random_preds,0).mean(0).detach().cpu().numpy() 
+            km_mut_preds = [outputs[0] for outputs in km_mut_outputs] # [[b,2]*5]
+            km_mut_preds = torch.stack(km_mut_preds,0).mean(0).detach().cpu().numpy() 
             km_seq_preds = [outputs[0] for outputs in km_seq_outputs] # [[b,2]*5]
             km_seq_preds = torch.stack(km_seq_preds,0).mean(0).detach().cpu().numpy() 
             
                 
         names = wt_data.name 
         for i, name in enumerate(names):
-            test_random_pred_dict[name] = [kcat_random_preds[i],km_random_preds[i],kcat_random_preds[i]-km_random_preds[i]]
+            test_mut_pred_dict[name] = [kcat_mut_preds[i],km_mut_preds[i],kcat_mut_preds[i]-km_mut_preds[i]]
             test_seq_pred_dict[name] = [kcat_seq_preds[i],km_seq_preds[i],kcat_seq_preds[i]-km_seq_preds[i]]
         
     dms_df = pd.read_csv(config['dms_path'])
 
-    kcat_random_preds = []
-    km_random_preds = []
-    kcatOverkm_random_preds = []
+    kcat_mut_preds = []
+    km_mut_preds = []
+    kcatOverkm_mut_preds = []
     kcat_seq_preds = []
     km_seq_preds = []
     kcatOverkm_seq_preds = []
@@ -107,18 +107,18 @@ def Inference(config):
 
     for _,row in dms_df.iterrows():
         index = row['index']
-        kcat_random_preds.append(test_random_pred_dict[index][0])
-        km_random_preds.append(test_random_pred_dict[index][1])
-        kcatOverkm_random_preds.append(test_random_pred_dict[index][2])
+        kcat_mut_preds.append(test_mut_pred_dict[index][0])
+        km_mut_preds.append(test_mut_pred_dict[index][1])
+        kcatOverkm_mut_preds.append(test_mut_pred_dict[index][2])
 
         kcat_seq_preds.append(test_seq_pred_dict[index][0])
         km_seq_preds.append(test_seq_pred_dict[index][1])
         kcatOverkm_seq_preds.append(test_seq_pred_dict[index][2])
 
-        kcatOverkm_aveLevel_preds.append((test_random_pred_dict[index][2]+test_seq_pred_dict[index][2])/2)
+        kcatOverkm_aveLevel_preds.append((test_mut_pred_dict[index][2]+test_seq_pred_dict[index][2])/2)
     
-    dms_df['kcat_random_preds']=kcat_random_preds
-    dms_df['km_random_preds']=km_random_preds
+    dms_df['kcat_mut_preds']=kcat_mut_preds
+    dms_df['km_mut_preds']=km_mut_preds
     dms_df['kcat_seq_preds']=kcat_seq_preds
     dms_df['km_seq_preds']=km_seq_preds
     dms_df['kcatOverkm_aveLevel_preds']=kcatOverkm_aveLevel_preds
