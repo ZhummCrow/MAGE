@@ -1,4 +1,4 @@
-# MAGE-DB 
+# DeltaCata-DB
 Data collection pipeline.
 <img src="./Figure S1.svg">
 
