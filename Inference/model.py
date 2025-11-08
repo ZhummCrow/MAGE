@@ -287,9 +287,9 @@ class CrossAttention(nn.Module):
         return smiles,attention
 
 
-class MAGE(nn.Module): 
+class DeltaCata(nn.Module): 
     def __init__(self, node_input_dim, edge_input_dim, hidden_dim, num_layers, dropout, task, num_att_layers,num_tgt_layers=2):
-        super(MAGE, self).__init__()
+        super(DeltaCata, self).__init__()
         self.hidden_dim = hidden_dim
 
 

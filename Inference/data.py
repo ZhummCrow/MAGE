@@ -24,9 +24,6 @@ class ProteinGraphDataset(data.Dataset):
         self.dataset = pd.read_csv(data_path)
         self.feat_path = feat_path
         
-
-
-        
         
     def __len__(self): return len(self.dataset)
 

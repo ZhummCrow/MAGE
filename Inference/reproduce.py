@@ -3,7 +3,7 @@ import json
 import argparse
 import datetime
 from tqdm import tqdm
-from model import MAGE
+from model import DeltaCata
 from torch_geometric.loader import DataLoader
 from data import ProteinGraphDataset
 
@@ -43,7 +43,7 @@ def Reproduce(args):
     models = []
     for fold in range(folds):
         state_dict = torch.load(artifacts_path + f'{task}_{level}/finetune_fold%s.ckpt'%fold, device)
-        model = MAGE(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, task, num_att_layers).to(device)
+        model = DeltaCata(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, task, num_att_layers).to(device)
         model.load_state_dict(state_dict)
         model.eval()
         models.append(model)

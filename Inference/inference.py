@@ -3,7 +3,7 @@ import json
 import argparse
 import datetime
 from tqdm import tqdm
-from model import MAGE
+from model import DeltaCata
 from torch_geometric.loader import DataLoader
 from data import ProteinGraphDataset
 
@@ -41,25 +41,25 @@ def Inference(config):
     km_seq_models = []
     for fold in range(folds):
         state_dict = torch.load(artifacts_path + 'kcat_random/finetune_fold%s.ckpt'%fold, device)
-        model = MAGE(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, "kcat", kcat_num_att_layers).to(device)
+        model = DeltaCata(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, "kcat", kcat_num_att_layers).to(device)
         model.load_state_dict(state_dict)
         model.eval()
         kcat_random_models.append(model)
 
         state_dict = torch.load(artifacts_path + 'km_random/finetune_fold%s.ckpt'%fold, device)
-        model = MAGE(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, "km", km_num_att_layers).to(device)
+        model = DeltaCata(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, "km", km_num_att_layers).to(device)
         model.load_state_dict(state_dict)
         model.eval()
         km_random_models.append(model)
 
         state_dict = torch.load(artifacts_path + 'kcat_seq/finetune_fold%s.ckpt'%fold, device)
-        model = MAGE(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, "kcat", kcat_num_att_layers).to(device)
+        model = DeltaCata(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, "kcat", kcat_num_att_layers).to(device)
         model.load_state_dict(state_dict)
         model.eval()
         kcat_seq_models.append(model)
 
         state_dict = torch.load(artifacts_path + 'km_seq/finetune_fold%s.ckpt'%fold, device)
-        model = MAGE(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, "km", km_num_att_layers).to(device)
+        model = DeltaCata(node_input_dim, edge_input_dim, hidden_dim, GNN_layers, dropout, "km", km_num_att_layers).to(device)
         model.load_state_dict(state_dict)
         model.eval()
         km_seq_models.append(model)
