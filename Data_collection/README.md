@@ -1,5 +1,6 @@
 # DeltaCata-DB
 Data collection pipeline.
+<img src="./Figure S1.svg">
 
 ## Requirements
 To run the data collection pipeline, you also need to install the following additional packages (on top of the main project’s environment):
