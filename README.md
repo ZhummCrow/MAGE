@@ -1,5 +1,6 @@
-# MAGE
+# DeltaCata
 Enzyme optimization.
+<img src="./overview.jpg">
 
 ## 📖 Table of Contents
 - [Local Installation](#local-installation)
@@ -13,11 +14,11 @@ Enzyme optimization.
 
 ## 💻 Local Installation <a name="local-installation"></a>
 
-To run MAGE on a local machine, please follow the instructions below.
+To run DeltaCata on a local machine, please follow the instructions below.
 
 ### 📦 Requirements <a name="requirements"></a>
 ```
-conda create --name MAGE python=3.8
+conda create --name DeltaCata python=3.8
 conda install pytorch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0 pytorch-cuda=11.8 -c pytorch -c nvidia
 pip install pandas
 pip install fair-esm
