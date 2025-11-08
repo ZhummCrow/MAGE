@@ -1,6 +1,6 @@
 # DeltaCata
 Enzyme optimization.
-<img src="./overview.jpg">
+<img src="./DeltaCata.jpg">
 
 ## 📖 Table of Contents
 - [Local Installation](#local-installation)
